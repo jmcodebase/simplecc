@@ -1,0 +1,2 @@
+# simplecc
+simple calorie counter
