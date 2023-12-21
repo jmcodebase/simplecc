@@ -22,10 +22,12 @@ from typing import List
 from datetime import datetime
 from pathlib import Path
 import csv
-import fooditems
+#import fooditems
 
+FOOD_ITEMS_LOC = ""
 ENABLE_LOGGING = False
 HISTORY_FILE = ""
+
 """
 Logging function
 
@@ -37,14 +39,33 @@ def output(msg :str):
     if ENABLE_LOGGING is True:
         print (msg)
 
+
+def default_food_items() -> str:
+    return """OZ=\"oz\"
+G=\"grams\"
+BAG=\"bag\"
+CONTAINER=\"container\"
+SLICE=\"slice\"
+
+food_items={
+    \"ribeye\":(OZ,200),
+    \"sirloin\":(OZ,100)
+    }"""
+
+def make_folder(folder:str):
+    if not os.path.exists(folder):
+        output(f"making folder: {folder}")
+        os.makedirs(folder)
+
 def check_if_file_and_folder_exists():
     home_dir = os.path.expanduser("~")
     folder_name = ".simplecc"
     path = os.path.join(home_dir,folder_name)
+    config_folder = home_dir+"/.config/simplecc/"
+    output(config_folder)
+    config_path = os.path.join(config_folder, "fooditems.py")
 
-    if not os.path.exists(path):
-        output(f"making folder: {path}")
-        os.makedirs(path)
+    make_folder(path)
 
     current_date = datetime.now()
     day = current_date.day
@@ -59,6 +80,16 @@ def check_if_file_and_folder_exists():
     output(HISTORY_FILE)
     if not os.path.exists(HISTORY_FILE):
         Path(HISTORY_FILE).touch()
+
+    make_folder(config_folder)
+    global FOOD_ITEMS_LOC;
+    FOOD_ITEMS_LOC = config_path
+
+    output(f"config_path: {config_path}, FOOD_ITEM_LOC: {FOOD_ITEMS_LOC}")
+    if not os.path.exists(config_path):
+        with open(config_path, 'w') as file:
+                output(f"making {config_path}")
+                file.write(default_food_items())
 
 def parse_parameters() -> tuple[str,float,str]:
     length = len(sys.argv)
@@ -80,10 +111,18 @@ def calculate_calories(quantity:float,calories_per_unit:float)->float:
     output(f"quantity:{quantity} calories per unit: {calories_per_unit}")
     return float(quantity)*float(calories_per_unit)
 
+def load_food_items()->dict[str,tuple]:
+    output(FOOD_ITEMS_LOC)
+    exec(open(FOOD_ITEMS_LOC).read(), globals())
+    output(food_items)
+    return food_items
+
 def find_item_in_food_items(item):
     item = item.lower()
-    if item in fooditems.food_items:
-        return_items = fooditems.food_items[item]
+    #if item in fooditems.food_items:
+    fi = load_food_items()
+    if item in fi:
+        return_items = fi[item]
         output(return_items)
         return return_items
     else:
