@@ -34,3 +34,7 @@ At the bottom, you have the dictionary. Each line follows this format:
 # Removing items
 Use your favorite text editor to edit the files in ~/.simplecc directly.
 
+# Download
+```
+curl https://raw.githubusercontent.com/jmcodebase/simplecc/master/simplecc.py --output simplecc.py
+```
