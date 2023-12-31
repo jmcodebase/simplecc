@@ -34,6 +34,25 @@ At the bottom, you have the dictionary. Each line follows this format:
 # Removing items
 Use your favorite text editor to edit the files in ~/.simplecc directly.
 
+# Searching food items
+Instead of typing things exactly, you can utilize the benefits of the Unix philosophy. 
+
+```
+grep --ignore-case "sirl" ~/.config/simplecc/fooditems.py| head -n 1 | cut --delimiter=":" --fields=1
+```
+
+This will return the first result that matches sirl, in the case of the default fooditems.py, it will return sirloin.
+
+You can turn this into a reusable command line function or a bash script. I use it with zsh, as a function. Here is the code:
+
+```
+scc(){
+grep --ignore-case "$1" ~/.config/simplecc/fooditems.py| head -n 1 | cut --delimiter=":" --fields=1
+}
+```
+
+Keeping things minimalist allows extensibility, you can always come up with your own search.
+
 # Download
 ```
 curl https://raw.githubusercontent.com/jmcodebase/simplecc/master/simplecc.py --output simplecc.py
