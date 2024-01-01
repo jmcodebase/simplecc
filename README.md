@@ -34,6 +34,9 @@ At the bottom, you have the dictionary. Each line follows this format:
 # Removing items
 Use your favorite text editor to edit the files in ~/.simplecc directly.
 
+# Logging/Verbose output
+Add "true" as the last parameter
+
 # Searching food items
 Instead of typing things exactly, you can utilize the benefits of the Unix philosophy. 
 
@@ -52,6 +55,21 @@ grep --ignore-case "$1" ~/.config/simplecc/fooditems.py| head -n 1 | cut --delim
 ```
 
 Keeping things minimalist allows extensibility, you can always come up with your own search.
+
+If you want to have the search feature "built in", try something like this as a bash script:
+
+```
+#!/bin/bash
+
+#Description: searchable feature for simplecc
+
+output=$(grep --ignore-case "$1" ~/.config/simplecc/fooditems.py | sed 's/^[[:space:]]*//' | head -n 1 | cut --delimiter=":" --fields=1 | tr -d '"' | tr -d '\t')
+
+python simplecc.py "$output" $2 $3
+```
+
+It is important to have the actual location of simplecc.py here. The code in "output" is simply the kind of search that is useful for me. It will match the first item that starts with the string you supply. You may have different needs.
+
 
 # Download
 ```
